@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<robot name="robot">
+
+  <material name="black">
+      <color rgba="0.1 0.1 0.1 1"/>
+  </material>
+  <material name="red">
+      <color rgba="1 0 0 1"/> 
+  </material>
+  <material name="blue">
+      <color rgba="0 0 1 1"/>
+  </material>
+
+  <link name="chasis">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual>
+    <collision name="chasis_collision">
+      <geometry>
+        <box size="0.1 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+  </link>
+
+  <link name="front_ramp">
+    <visual>
+      <geometry>
+        <box size="0.01 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="blue"/>
+    </visual> 
+    <collision name="front_ramp_collision">
+      <geometry>
+        <box size="0.01 0.1 0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link> 
+
+  <link name="right_weel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>   
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="black"/>
+    </visual>
+    <collision name="right_weel_collision">
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- friction -->
+       <friction>
+        <ode>
+          <mu>1</mu>
+          <mu2>1</mu2>
+          <fdir1>0 0 1</fdir1>
+          <slip1>0.0</slip1>
+          <slip2>0.0</slip2>
+        </ode>
+        <bullet>
+          <friction>1</friction>
+          <friction2>1</friction2>
+          <rolling_friction>0.1</rolling_friction>
+        </bullet>
+       </friction>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+
+  <link name="left_weel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <material name="black"/>
+    </visual> 
+    <collision name="left_weel_collision">
+      <geometry>
+        <cylinder radius="0.02" length="0.02"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <!-- friction -->
+       <friction>
+        <ode>
+          <mu>1</mu>
+          <mu2>1</mu2>
+          <fdir1>0 0 1</fdir1>
+          <slip1>0.0</slip1>
+          <slip2>0.0</slip2>
+        </ode>
+        <bullet>
+          <friction>1</friction>
+          <friction2>1</friction2>
+          <rolling_friction>0.1</rolling_friction>
+        </bullet>
+       </friction>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+  </link>
+    
+  <link name="caster_wheel">
+    <visual>
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <material name="black"/>
+    </visual>
+    <collision name="caster_wheel_collision">
+      <geometry>
+        <sphere radius="0.02"/>
+      </geometry>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+    <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+    </link>
+
+  <joint name="joint_right_weel" type="continuous">
+    <parent link="chasis"/>
+    <child link="right_weel"/>
+    <origin xyz="-0.03 -0.0601 0.01" rpy="1.57 0 0"/>
+    <axis xyz="0 0 -1"/>
+  </joint>
+
+  <joint name="joint_left_weel" type="continuous">
+      <parent link="chasis"/>
+      <child link="left_weel"/>
+      <origin xyz="-0.03 0.0601 0.01" rpy="1.57 0 0"/>
+      <axis xyz="0 0 -1"/>
+  </joint>
+
+  <joint name="joint_spherical_weel" type="fixed">
+      <parent link="chasis"/>
+      <child link="caster_wheel"/>
+      <origin xyz="0.05 0 0.01" rpy="0 0 0"/>
+      <axis xyz="0 0 0"/>
+  </joint>
+
+  <joint name="joint_front_ramp" type="fixed">
+    <parent link="chasis"/>
+    <child link="front_ramp"/>
+    <origin xyz="0.06 0 0.05" rpy="0 -0.5 0"/>
+    <axis xyz="0 0 0"/>
+  </joint>
+  
+  <gazebo>
+    <plugin 
+      filename="gz-sim-diff-drive-system"
+      name="gz::sim::systems::DiffDrive">
+      <left_joint>joint_left_weel</left_joint>
+      <right_joint>joint_right_weel</right_joint>
+      <wheelSeparation>0.1</wheelSeparation>
+      <wheelRadius>0.02</wheelRadius>
+      <odom_publish_frequency>1</odom_publish_frequency>
+      <!-- <topic>cmd_vel</topic>  -->
+    </plugin>
+  </gazebo>
+
+</robot>
