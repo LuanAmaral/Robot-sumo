@@ -45,10 +45,18 @@ def launch_setup(context):
                    +robot_name+
                    '/cmd_vel@geometry_msgs/msg/Twist@ignition.msgs.Twist'],
         output='screen',
-        namespace='robot'
     )
     
-    return [spawn_robot_node, gazebo_bridge]
+    pose_bridge = Node(
+        package='ros_ign_bridge',
+        executable='parameter_bridge',
+        arguments=['/model/'
+                   +robot_name+
+                   '/pose@geometry_msgs/msg/Pose@ignition.msgs.Pose'],
+        output='screen',
+    )
+    
+    return [spawn_robot_node, gazebo_bridge, pose_bridge]
     
 
 def generate_launch_description():
