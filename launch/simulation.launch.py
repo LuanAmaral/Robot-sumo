@@ -7,6 +7,7 @@ from launch.actions import DeclareLaunchArgument
 from launch.actions import IncludeLaunchDescription, SetEnvironmentVariable
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.actions import Node
 
 
 ARGUMENTS = [
@@ -61,9 +62,18 @@ def generate_launch_description():
             ('yaw', "0"),]
     )
 
+    # Launch node check_winner
+    check_winner_node = Node(
+        package='robot_sumo',
+        executable='check_winner',
+        name='check_winner',
+        output='screen',
+    )
+    
     # Create launch description and add actions
     ld = LaunchDescription(ARGUMENTS)
     ld.add_action(ignition)
     ld.add_action(robot1_spawn)
     ld.add_action(robot2_spawn)
+    ld.add_action(check_winner_node)
     return ld
